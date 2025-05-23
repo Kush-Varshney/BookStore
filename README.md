@@ -53,7 +53,7 @@ A modern, scalable bookstore API built with Node.js microservices architecture. 
 
 1. Install dependencies:
 ```bash
-npm install
+npm install (In server)
 ```
 
 2. Create `.env` files in each service directory:
