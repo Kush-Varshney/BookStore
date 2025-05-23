@@ -1,0 +1,35 @@
+{
+  "name": "bookstore-microservices-server",
+  "version": "1.0.0",
+  "description": "Microservices-based Book Store backend",
+  "type": "module",
+  "scripts": {
+    "start:user": "node user-service/server.js",
+    "start:book": "node book-service/server.js",
+    "start:order": "node order-service/server.js",
+    "start:gateway": "node api-gateway/server.js",
+    "dev:user": "nodemon user-service/server.js",
+    "dev:book": "nodemon book-service/server.js",
+    "dev:order": "nodemon order-service/server.js",
+    "dev:gateway": "nodemon api-gateway/server.js",
+    "dev": "concurrently \"npm run dev:user\" \"npm run dev:book\" \"npm run dev:order\" \"npm run dev:gateway\""
+  },
+  "keywords": ["microservices", "nodejs", "express", "mongodb", "bookstore"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^2.0.6",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "swagger-ui-express": "^5.0.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  }
+}

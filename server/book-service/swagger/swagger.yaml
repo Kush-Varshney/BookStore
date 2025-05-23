@@ -1,0 +1,351 @@
+openapi: 3.0.0
+info:
+  title: Book Store API
+  description: API documentation for the Book Store microservices
+  version: 1.0.0
+servers:
+  - url: http://localhost:5002/api
+    description: Book Service API
+paths:
+  /books:
+    post:
+      summary: Add a new book
+      tags:
+        - Books
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        201:
+          description: Book created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        400:
+          description: Invalid book data
+        401:
+          description: Not authorized
+        403:
+          description: Not authorized as admin
+    get:
+      summary: Get all books
+      tags:
+        - Books
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: Number of items per page
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Filter by category
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+          description: Minimum price filter
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+          description: Maximum price filter
+        - name: sort
+          in: query
+          schema:
+            type: string
+          description: Sort field and order (e.g., price:desc)
+      responses:
+        200:
+          description: List of books with pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  books:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Book'
+                  totalPages:
+                    type: integer
+                  currentPage:
+                    type: integer
+                  totalBooks:
+                    type: integer
+        500:
+          description: Server error
+  /books/{id}:
+    get:
+      summary: Get a book by ID
+      tags:
+        - Books
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Book ID
+      responses:
+        200:
+          description: Book found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        404:
+          description: Book not found
+        500:
+          description: Server error
+    put:
+      summary: Update a book
+      tags:
+        - Books
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Book ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        200:
+          description: Book updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        401:
+          description: Not authorized
+        403:
+          description: Not authorized as admin
+        404:
+          description: Book not found
+        500:
+          description: Server error
+    delete:
+      summary: Delete a book
+      tags:
+        - Books
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Book ID
+      responses:
+        200:
+          description: Book deleted successfully
+        401:
+          description: Not authorized
+        403:
+          description: Not authorized as admin
+        404:
+          description: Book not found
+        500:
+          description: Server error
+  /books/search:
+    get:
+      summary: Search books
+      tags:
+        - Books
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+      responses:
+        200:
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        400:
+          description: Search query is required
+        500:
+          description: Server error
+  /books/{id}/reviews:
+    post:
+      summary: Add a review to a book
+      tags:
+        - Reviews
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Book ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: number
+                  minimum: 1
+                  maximum: 5
+                comment:
+                  type: string
+      responses:
+        200:
+          description: Review added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        400:
+          description: Invalid review data
+        401:
+          description: Not authorized
+        404:
+          description: Book not found
+    get:
+      summary: Get book reviews
+      tags:
+        - Reviews
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Book ID
+      responses:
+        200:
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Review'
+        404:
+          description: Book not found
+components:
+  schemas:
+    Book:
+      type: object
+      required:
+        - title
+        - author
+        - description
+        - category
+        - price
+        - isbn
+        - publisher
+        - publishedDate
+        - inStock
+      properties:
+        _id:
+          type: string
+          description: Book ID
+        title:
+          type: string
+          example: The Great Gatsby
+        author:
+          type: string
+          example: F. Scott Fitzgerald
+        description:
+          type: string
+          example: A novel about the American Dream
+        category:
+          type: string
+          example: Fiction
+        price:
+          type: number
+          example: 12.99
+        isbn:
+          type: string
+          example: 978-3-16-148410-0
+        publisher:
+          type: string
+          example: Scribner
+        publishedDate:
+          type: string
+          format: date
+          example: 1925-04-10
+        inStock:
+          type: integer
+          example: 50
+        imageUrl:
+          type: string
+          example: great-gatsby.jpg
+        rating:
+          type: number
+          minimum: 0
+          maximum: 5
+          example: 4.5
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Review:
+      type: object
+      required:
+        - userId
+        - rating
+      properties:
+        userId:
+          type: string
+          description: User ID who wrote the review
+        rating:
+          type: number
+          minimum: 1
+          maximum: 5
+          example: 4
+        comment:
+          type: string
+          example: Great book!
+        date:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
