@@ -1,6 +1,6 @@
 # Bookstore Microservices API
 
-A scalable and maintainable microservices-based bookstore API built with Node.js, Express, and MongoDB.
+A modern, scalable bookstore API built with Node.js microservices architecture. Features include book management, user authentication, order processing, and real-time inventory tracking. Built with Express, MongoDB, and JWT authentication.
 
 ## Features
 
